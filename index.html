@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LastDayCraft - Zombie Survival</title>
+    <meta
+      name="description"
+      content="Servidor de Minecraft LastDayCraft Zombie Survival - guía de instalación, mods destacados y videos."
+    />
+    <link rel="icon" type="image/png" href="logo-lastdaycraft.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="loading-screen" id="loading-screen">
+      <div class="loading-mc">
+        <div class="loading-mc__percent" id="loading-percent">0%</div>
+        <div class="loading-mc__frame">
+          <div class="loading-mc__inner"></div>
+        </div>
+        <p class="loading-mc__tip">
+          Preparando hordas, estructuras abandonadas y noches interminables...
+        </p>
+      </div>
+    </div>
+
+    <canvas id="bg-particles"></canvas>
+
+    <header class="hero" id="top">
+      <nav class="nav">
+        <div class="nav__logo">
+          <span class="nav__title">LastDayCraft</span>
+          <span class="nav__subtitle">Zombie Survival</span>
+        </div>
+        <button class="nav__toggle" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="nav__right">
+          <ul class="nav__links">
+            <li><a href="#instalacion">Instalación</a></li>
+            <li><a href="#mods">Mods Destacados</a></li>
+            <li><a href="#videos">Videos</a></li>
+          </ul>
+          <a
+            href="https://github.com/jhonatan2405"
+            target="_blank"
+            rel="noopener"
+            class="btn-github"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M7.99992 1.33331C7.12444 1.33331 6.25753 1.50575 5.4487 1.84078C4.63986 2.17581 3.90493 2.66688 3.28587 3.28593C2.03563 4.53618 1.33325 6.23187 1.33325 7.99998C1.33325 10.9466 3.24659 13.4466 5.89325 14.3333C6.22659 14.3866 6.33325 14.18 6.33325 14C6.33325 13.8466 6.33325 13.4266 6.33325 12.8733C4.48659 13.2733 4.09325 11.98 4.09325 11.98C3.78659 11.2066 3.35325 11 3.35325 11C2.74659 10.5866 3.39992 10.6 3.39992 10.6C4.06659 10.6466 4.41992 11.2866 4.41992 11.2866C4.99992 12.3 5.97992 12 6.35992 11.84C6.41992 11.4066 6.59325 11.1133 6.77992 10.9466C5.29992 10.78 3.74659 10.2066 3.74659 7.66665C3.74659 6.92665 3.99992 6.33331 4.43325 5.85998C4.36659 5.69331 4.13325 4.99998 4.49992 4.09998C4.49992 4.09998 5.05992 3.91998 6.33325 4.77998C6.85992 4.63331 7.43325 4.55998 7.99992 4.55998C8.56659 4.55998 9.13992 4.63331 9.66659 4.77998C10.9399 3.91998 11.4999 4.09998 11.4999 4.09998C11.8666 4.99998 11.6333 5.69331 11.5666 5.85998C11.9999 6.33331 12.2533 6.92665 12.2533 7.66665C12.2533 10.2133 10.6933 10.7733 9.20659 10.94C9.44659 11.1466 9.66659 11.5533 9.66659 12.1733C9.66659 13.0666 9.66659 13.7866 9.66659 14C9.66659 14.18 9.77325 14.3933 10.1133 14.3333C12.7599 13.44 14.6666 10.9466 14.6666 7.99998C14.6666 7.1245 14.4941 6.25759 14.1591 5.44876C13.8241 4.63992 13.333 3.90499 12.714 3.28593C12.0949 2.66688 11.36 2.17581 10.5511 1.84078C9.7423 1.50575 8.8754 1.33331 7.99992 1.33331Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="hero__content">
+        <div class="hero__text">
+          <p class="hero__tag">Servidor Minecraft · 1.20.1 · Modpack</p>
+          <h1>Sobrevive al &uacute;ltimo d&iacute;a</h1>
+          <p class="hero__desc">
+            Hordas de zombis, recursos limitados y eventos nocturnos. &Uacute;nete a
+            <strong>LastDayCraft</strong> y demuestra que puedes sobrevivir.
+          </p>
+          <div class="hero__cta">
+            <a href="#instalacion" class="btn btn--primary">Instalar y Jugar</a>
+            <a href="#videos" class="btn btn--ghost">Ver videos</a>
+          </div>
+          <div class="hero__server-info">
+            <span class="pill pill--accent">IP: <strong>pendiente</strong></span>
+            <span class="pill">Versi&oacute;n: <strong>Forge 1.20.1 - 47.3.7</strong></span>
+          </div>
+        </div>
+        <div class="hero__media">
+          <div class="hero__logo-frame">
+            <!-- Reemplaza el nombre del archivo si usas otro distinto -->
+            <img
+              src="logo-lastdaycraft.png"
+              alt="LastDayCraft Zombie Survival"
+              class="hero__logo-img"
+            />
+          </div>
+          <div class="hero__stats">
+            <div class="stat">
+              <span class="stat__label">Dificultad</span>
+              <span class="stat__value">Dif&iacute;cil</span>
+            </div>
+            <div class="stat">
+              <span class="stat__label">Modo</span>
+              <span class="stat__value">Zombie Survival</span>
+            </div>
+            <div class="stat">
+              <span class="stat__label">Mods</span>
+              <span class="stat__value">+120</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero__scroll">
+        <span>Scroll</span>
+        <span class="hero__scroll-line"></span>
+      </div>
+    </header>
+
+    <main>
+      <!-- INSTALACIÓN -->
+      <section id="instalacion" class="section section--blur">
+        <div class="section__header">
+          <h2>Instalaci&oacute;n</h2>
+          <p>Gu&iacute;a paso a paso para entrar al servidor con el modpack oficial.</p>
+        </div>
+
+        <div class="install-grid">
+          <div class="install-steps">
+            <!-- Paso 1 -->
+            <article class="step-card">
+              <h3>1. Descargar el Launcher</h3>
+              <ul>
+                <li>
+                  Ve al enlace oficial:
+                  <a href="https://skmedix.pl/downloads" target="_blank" rel="noopener"
+                    >https://skmedix.pl/downloads</a
+                  >
+                </li>
+                <li>Descarga la &uacute;ltima versi&oacute;n disponible.</li>
+              </ul>
+              <div class="step-media-placeholder">
+                <span>Espacio para captura del launcher</span>
+              </div>
+            </article>
+
+            <!-- Paso 2 -->
+            <article class="step-card">
+              <h3>2. Configurar el Launcher</h3>
+              <ul>
+                <li>Abre el launcher.</li>
+                <li>Haz clic en <strong>&ldquo;Switch to Offline Mode&rdquo;</strong>.</li>
+                <li>Escribe cualquier nombre de usuario (ser&aacute; tu nickname en el juego).</li>
+              </ul>
+              <div class="step-media-placeholder">
+                <span>Espacio para captura de configuraci&oacute;n</span>
+              </div>
+            </article>
+
+            <!-- Paso 3 -->
+            <article class="step-card">
+              <h3>3. Instalar Juego</h3>
+              <ul>
+                <li>En el men&uacute;, haz clic en <strong>Installations Manager</strong>.</li>
+                <li>Presiona <strong>New Installation</strong>.</li>
+                <li>En <strong>Name</strong> coloca el nombre que quieras (ejemplo: LastDayCraft).</li>
+                <li>En <strong>Version</strong> selecciona: <strong>Forge 1.20.1 - 47.3.7</strong>.</li>
+                <li>Haz clic en <strong>Save</strong>.</li>
+                <li>
+                  En los 3 puntos de la instalaci&oacute;n creada, selecciona
+                  <strong>Open Installation Directory</strong>.
+                </li>
+              </ul>
+              <div class="step-media-placeholder">
+                <span>Espacio para captura del perfil de Forge</span>
+              </div>
+            </article>
+
+            <!-- Paso 4 -->
+            <article class="step-card">
+              <h3>4. Descargar el Modpack</h3>
+              <ul>
+                <li>
+                  Descarga el modpack desde este enlace:
+                  <a href="#" target="_blank" rel="noopener">[Enlace de descarga del modpack]</a>
+                  <!-- Reemplaza # con tu enlace real (Drive, Mediafire, etc.) -->
+                </li>
+                <li>Descomprime el archivo.</li>
+                <li>
+                  Copia y pega las 4 carpetas dentro del directorio de la instalaci&oacute;n que abriste
+                  en el paso anterior:
+                </li>
+              </ul>
+              <div class="folders-grid">
+                <span class="folder-pill">mods</span>
+                <span class="folder-pill">config</span>
+                <span class="folder-pill">resourcepacks (opcional)</span>
+                <span class="folder-pill">shaderpacks (opcional)</span>
+              </div>
+              <div class="step-media-placeholder">
+                <span>Espacio para captura del directorio</span>
+              </div>
+            </article>
+
+            <!-- Paso 5 -->
+            <article class="step-card">
+              <h3>5. Ingresar al Juego</h3>
+              <ul>
+                <li>Regresa al launcher y dale a <strong>Play</strong> con la instalaci&oacute;n.</li>
+                <li>Una vez cargado el juego, ve a <strong>Multiplayer &rarr; Add Server</strong>.</li>
+                <li>Coloca:</li>
+              </ul>
+              <div class="server-box">
+                <p><strong>Name:</strong> LastDayCraft</p>
+                <p><strong>IP:</strong> <span class="server-ip">pendiente</span></p>
+              </div>
+              <p>Guarda y entra al servidor. &iexcl;Listo para sobrevivir!</p>
+              <div class="step-media-placeholder">
+                <span>Espacio para captura del servidor en la lista</span>
+              </div>
+            </article>
+          </div>
+
+          <aside class="install-aside">
+            <div class="callout">
+              <h3>Requisitos recomendados</h3>
+              <ul>
+                <li>RAM dedicada al launcher: <strong>4&nbsp;GB o m&aacute;s</strong></li>
+                <li>Java 17 o superior instalado</li>
+                <li>Conexi&oacute;n estable a Internet</li>
+              </ul>
+            </div>
+            <div class="callout callout--accent">
+              <h3>Links r&aacute;pidos</h3>
+              <ul class="quick-links">
+                <li><a href="https://skmedix.pl/downloads" target="_blank" rel="noopener">Descargar Launcher</a></li>
+                <li><a href="#" target="_blank" rel="noopener">Descargar Modpack</a></li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- MODS DESTACADOS -->
+      <section id="mods" class="section">
+        <div class="section__header">
+          <h2>Mods Destacados</h2>
+          <p>Una selecci&oacute;n de los mods clave que dan vida al zombie survival.</p>
+        </div>
+
+        <div class="mods-filters">
+          <button class="chip chip--active" data-filter="all">Todos</button>
+          <button class="chip" data-filter="zombies">Zombis</button>
+          <button class="chip" data-filter="supervivencia">Supervivencia</button>
+          <button class="chip" data-filter="optimizacion">Optimizaci&oacute;n</button>
+          <button class="chip" data-filter="visual">Visual</button>
+        </div>
+
+        <div class="mods-grid">
+          <article class="mod-card" data-category="zombies supervivencia">
+            <h3>The Hordes</h3>
+            <p>
+              Sistema de hordas de zombis que atacan en oleadas cada vez m&aacute;s peligrosas. Ideal
+              para noches de supervivencia extrema.
+            </p>
+            <span class="tag">Zombis</span>
+          </article>
+
+          <article class="mod-card" data-category="zombies supervivencia">
+            <h3>Zombie Awareness</h3>
+            <p>
+              Los zombis pueden oler tu sangre, escuchar ruidos y seguir luces. Deja de ser invisible en
+              la oscuridad.
+            </p>
+            <span class="tag">Zombis</span>
+          </article>
+
+          <article class="mod-card" data-category="supervivencia">
+            <h3>Tough As Nails</h3>
+            <p>
+              Barra de sed, temperatura corporal y estaciones que te obligan a preparar refugios y
+              provisiones.
+            </p>
+            <span class="tag">Supervivencia</span>
+          </article>
+
+          <article class="mod-card" data-category="supervivencia visual">
+            <h3>Serene Seasons + Immersive Weathering</h3>
+            <p>
+              Estaciones del a&ntilde;o, climas intensos y deterioro ambiental que cambian por completo el
+              paisaje con el tiempo.
+            </p>
+            <span class="tag">Visual</span>
+          </article>
+
+          <article class="mod-card" data-category="optimizacion visual">
+            <h3>Embeddium + Oculus + ModernFix</h3>
+            <p>
+              Tr&iacute;o de optimizaci&oacute;n gr&aacute;fica y de rendimiento para mantener buenos FPS incluso
+              rodeado de hordas.
+            </p>
+            <span class="tag">Optimizaci&oacute;n</span>
+          </article>
+
+          <article class="mod-card" data-category="optimizacion visual">
+            <h3>Sound Physics Remastered + Ambient Sounds</h3>
+            <p>
+              Sonido 3D realista con ecos, pasos y gritos de zombis a tu alrededor, m&aacute;s ambiente
+              sonoro inmersivo.
+            </p>
+            <span class="tag">Visual</span>
+          </article>
+
+          <article class="mod-card" data-category="zombies visual">
+            <h3>Extra Gore &amp; Enhanced Visuals</h3>
+            <p>
+              Sangre, suciedad en pantalla y efectos visuales de terror para que cada pelea se sienta
+              brutal.
+            </p>
+            <span class="tag">Zombis</span>
+          </article>
+
+          <article class="mod-card" data-category="optimizacion">
+            <h3>FerriteCore + Entity Culling + BetterFPS Dist</h3>
+            <p>
+              Optimizaciones t&eacute;cnicas que reducen el uso de memoria y mejoran el render de entidades
+              y chunks.
+            </p>
+            <span class="tag">Optimizaci&oacute;n</span>
+          </article>
+        </div>
+      </section>
+
+      <!-- VIDEOS -->
+      <section id="videos" class="section section--blur">
+        <div class="section__header">
+          <h2>Videos</h2>
+          <p>Conoce el servidor y algunos de los mods en acci&oacute;n.</p>
+        </div>
+
+        <div class="videos-layout">
+          <aside class="videos-list" style="grid-column: 1 / -1">
+            <h3>Videos del servidor y gu&iacute;as</h3>
+            <div class="video-card">
+              <h4>Presentaci&oacute;n de LastDayCraft</h4>
+              <p>Recorrido general por el servidor, reglas b&aacute;sicas y qu&eacute; puedes encontrar.</p>
+              <a href="#" target="_blank" rel="noopener" class="video-link">Ver en YouTube</a>
+            </div>
+            <div class="video-card">
+              <h4>Optimiza tus FPS en el modpack</h4>
+              <p>Configuraciones recomendadas de gr&aacute;ficos, shaders y mods de rendimiento.</p>
+              <a href="#" target="_blank" rel="noopener" class="video-link">Ver en YouTube</a>
+            </div>
+            <div class="video-card">
+              <h4>Gu&iacute;a de supervivencia temprana</h4>
+              <p>Primeros pasos, refugios seguros y manejo de recursos los primeros d&iacute;as.</p>
+              <a href="#" target="_blank" rel="noopener" class="video-link">Ver en YouTube</a>
+            </div>
+            <div class="video-card">
+              <h4>Mods de hordas y zombis avanzados</h4>
+              <p>Explicaci&oacute;n de The Hordes, Zombie Awareness y otros mods de dificultad.</p>
+              <a href="#" target="_blank" rel="noopener" class="video-link">Ver en YouTube</a>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__content">
+        <p>
+          LastDayCraft &mdash; Zombie Survival · P&aacute;gina no oficial de Mojang o Microsoft.
+        </p>
+        <p class="footer__copy">
+          &copy; <span id="year"></span> LastDayCraft. Todos los derechos reservados.
+        </p>
+      </div>
+      <a href="#top" class="back-to-top" aria-label="Volver arriba">
+        ▲
+      </a>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
