@@ -315,6 +315,39 @@ body::before {
   box-shadow: 0 8px 25px rgba(0,0,0,0.45);
 }
 
+/* Overlay para pedir al usuario que autorice el audio */
+.audio-enable-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+  transition: opacity 220ms ease-out, transform 220ms ease-out;
+}
+.audio-enable-overlay.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.audio-enable-box {
+  background: linear-gradient(120deg, rgba(18,7,4,0.98), rgba(36,18,10,0.98));
+  border: 1px solid rgba(255,211,158,0.12);
+  padding: 1.2rem 1.6rem;
+  border-radius: 12px;
+  box-shadow: 0 28px 60px rgba(0,0,0,0.7);
+  text-align: center;
+  color: var(--text-main);
+}
+.audio-enable-box p {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+.audio-enable-box .btn {
+  padding: 0.6rem 1.2rem;
+}
+
 .hero__content {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
@@ -746,6 +779,56 @@ body::before {
 .callout--accent {
   background: radial-gradient(circle at top left, rgba(243, 165, 71, 0.24), transparent 60%),
     rgba(12, 4, 2, 0.98);
+}
+
+/* Server panel */
+.server-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(12,4,2,0.96), rgba(36,18,10,0.96));
+  border: 1px solid rgba(255,211,158,0.06);
+  border-radius: 10px;
+}
+.server-panel h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+.server-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.server-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.server-badges .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+.metric-card {
+  background: rgba(0,0,0,0.2);
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,211,158,0.06);
+}
+.metric-title {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.metric-value {
+  font-size: 1.1rem;
+  color: var(--text-main);
+  margin-top: 0.35rem;
 }
 
 .callout h3 {

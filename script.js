@@ -64,36 +64,75 @@
     // Si el navegador bloquea la reproducción automática, añadimos un fallback
     // para comenzar la reproducción en la primera interacción del usuario.
     function tryPlayBgAudio() {
-      if (bgAudioStarted) return;
-      bgAudio
-        .play()
-        .then(() => {
-          bgAudioStarted = true;
-          console.log("bgAudio reproduciéndose automáticamente");
-        })
-        .catch((err) => {
-          console.warn("Reproducción automática de bgAudio bloqueada:", err);
-          const resumeOnUserAction = () => {
+        if (bgAudioStarted) return;
+
+        // Intento 1: reproducir con sonido
+        bgAudio
+          .play()
+          .then(() => {
+            bgAudioStarted = true;
+            console.log("bgAudio reproduciéndose automáticamente");
+          })
+          .catch((err) => {
+            console.warn("Reproducción automática con sonido bloqueada:", err);
+            // Intento 2: reproducir en modo silenciado (esto suele permitirse) para "desbloquear"
+            bgAudio.muted = true;
             bgAudio
               .play()
               .then(() => {
                 bgAudioStarted = true;
-                console.log("bgAudio iniciado tras interacción del usuario");
+                console.log("bgAudio reproducido en modo silenciado (fallback)" );
+                // Mostrar overlay pidiendo activar sonido
+                showEnableOverlay();
               })
-              .catch(() => {});
-          };
-
-          document.addEventListener("pointerdown", resumeOnUserAction, { once: true });
-          document.addEventListener("keydown", resumeOnUserAction, { once: true });
-          // También intentamos reanudar desde eventos de entrada táctil
-          document.addEventListener("touchstart", resumeOnUserAction, { once: true });
-        });
-    }
+              .catch((errMuted) => {
+                console.warn("Reproducción en modo silencioso también falló:", errMuted);
+                // Mostrar overlay pidiendo activar sonido
+                showEnableOverlay();
+              });
+          });
+      }
 
     tryPlayBgAudio();
 
     // Control de reproducción visible para el usuario
     const audioToggle = document.getElementById("audio-toggle");
+    // Overlay y botón de activación para el audio en caso de bloqueo
+    const overlay = document.getElementById("audio-enable-overlay");
+    const overlayBtn = document.getElementById("audio-enable-btn");
+
+    function showEnableOverlay() {
+      if (overlay) {
+        overlay.classList.remove("is-hidden");
+        overlay.setAttribute("aria-hidden", "false");
+      }
+    }
+
+    function hideEnableOverlay() {
+      if (overlay) {
+        overlay.classList.add("is-hidden");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+    }
+
+    if (overlayBtn) {
+      overlayBtn.addEventListener("click", () => {
+        // Al hacer click en el overlay intentamos reproducir con sonido y desbloquear
+        bgAudio.muted = false;
+        bgAudio.volume = 0.35;
+        bgAudio
+          .play()
+          .then(() => {
+            bgAudioStarted = true;
+            hideEnableOverlay();
+            localStorage.setItem("ldc-audio-enabled", "true");
+          })
+          .catch((err) => {
+            console.warn("Error al intentar activar el audio desde el overlay:", err);
+          });
+      });
+    }
+
     if (audioToggle) {
       // Estado inicial
       audioToggle.textContent = "🔈"; // no suena todavía
@@ -133,6 +172,110 @@
   setTimeout(() => {
     finishLoading();
   }, duration + 800);
+})();
+
+// Panel de estado y métricas (usa proxy /api para no exponer el token)
+(function () {
+  const serverPanel = document.querySelector('.server-panel');
+  if (!serverPanel) return;
+
+  const serverId = serverPanel.dataset.server || '';
+  // Optional API base override stored as data attribute in HTML
+  const apiAttr = serverPanel.dataset.api || '';
+  if (apiAttr) window.LDC_API_BASE = apiAttr;
+  const ipEl = serverPanel.querySelector('.server-ip');
+  const statusEl = serverPanel.querySelector('.server-status-badge');
+  const playersEl = serverPanel.querySelector('.server-players');
+  const versionEl = serverPanel.querySelector('.server-version');
+  const metricMemory = document.getElementById('metric-memory');
+  const metricTick = document.getElementById('metric-tick');
+  const metricRamAssigned = document.getElementById('metric-ram-assigned');
+  const exportPlayersBtn = document.getElementById('export-players');
+
+  function mapStatus(code) {
+    switch (code) {
+      case 0: return 'OFFLINE';
+      case 1: return 'ONLINE';
+      case 2: return 'STARTING';
+      case 3: return 'STOPPING';
+      case 4: return 'RESTARTING';
+      case 6: return 'LOADING';
+      default: return 'UNKNOWN';
+    }
+  }
+
+  const API_BASE = window.LDC_API_BASE || '/api';
+  async function apiGet(path) {
+    try {
+      const res = await fetch(`${API_BASE}${path}`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.warn('API GET error', path, err);
+      throw err;
+    }
+  }
+
+  async function fetchServer() {
+    if (!serverId) return;
+    try {
+      const data = await apiGet(`/servers/${encodeURIComponent(serverId)}`);
+      // Update UI
+      if (ipEl) ipEl.textContent = data.address || `${data.host}:${data.port}` || 'N/A';
+      if (statusEl) statusEl.textContent = mapStatus(data.status);
+      if (playersEl) playersEl.textContent = `${data.players.count}/${data.players.max}`;
+      if (versionEl) versionEl.textContent = `${data.software.name} ${data.software.version}`;
+
+      // Export players btn enable if list available
+      if (exportPlayersBtn) exportPlayersBtn.disabled = !Array.isArray(data.players.list) || data.players.list.length === 0;
+    } catch (err) {
+      if (statusEl) statusEl.textContent = 'ERROR';
+    }
+  }
+
+  async function fetchRamOption() {
+    if (!serverId) return;
+    try {
+      const data = await apiGet(`/servers/${encodeURIComponent(serverId)}/options/ram/`);
+      if (metricRamAssigned) metricRamAssigned.textContent = (data && data.current) ? `${data.current} MB` : 'N/D';
+      // Metrics such as memory usage / tick require websocket; indicate fallback
+      if (metricMemory && metricMemory.textContent === '--') metricMemory.textContent = 'Habilitar websocket';
+      if (metricTick && metricTick.textContent === '--') metricTick.textContent = 'Habilitar websocket';
+    } catch (err) {
+      if (metricRamAssigned) metricRamAssigned.textContent = 'N/D';
+    }
+  }
+
+  // Export players list to CSV
+  if (exportPlayersBtn) {
+    exportPlayersBtn.addEventListener('click', async () => {
+      if (!serverId) return alert('Server ID no configurado');
+      try {
+        const data = await apiGet(`/servers/${encodeURIComponent(serverId)}`);
+        const players = (data.players && Array.isArray(data.players.list)) ? data.players.list : [];
+        if (!players.length) return alert('No hay jugadores conectados para exportar');
+
+        const csv = players.map(name => `${name}`).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `players-${serverId}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Error exportando jugadores');
+      }
+    });
+  }
+
+  // Basic polling
+  fetchServer();
+  fetchRamOption();
+  setInterval(fetchServer, 15000);
+  setInterval(fetchRamOption, 60000);
 })();
 
 // Partículas de fondo sencillas (polvo / chispas)

@@ -50,5 +50,21 @@ Este sitio es estático (HTML, CSS, JS), por lo que es muy fácil de desplegar.
 - `audio/`: Archivos de sonido y música de fondo.
 - `logo-lastdaycraft.png`: Recursos gráficos.
 
+## 🔌 Integración con Exaroton (Estado y Métricas)
+
+Si quieres mostrar el estado del servidor y métricas (jugadores conectados, RAM asignada), **no expongas tu token** en el cliente. Usa el proxy incluido en `api-proxy/`.
+
+Pasos rápidos:
+1. Copia `api-proxy/.env.example` a `api-proxy/.env` y rellena `EXAROTON_TOKEN` (tu token de exaroton) y `PROXY_KEY`.
+2. Desde `api-proxy/` instala dependencias: `npm install` y luego `npm start`. El servidor escuchará por defecto en 3001.
+3. En tu HTML (`index.html`), busca el panel de estado y introduce tu `server id` (el ServerID que aparece en la API o en el panel de exaroton) en el atributo `data-server` del elemento `.server-panel`.
+  - Si tu proxy no está servido en la misma origen de tu HTML (por ejemplo `http://localhost:3001`), añade `data-api="http://localhost:3001/api"` al elemento `.server-panel`.
+4. Abre la web local y el panel de estado consultará `/api/servers/:id` a través del proxy para leer estado y jugadores; la RAM asignada se consulta desde `/api/servers/:id/options/ram/`.
+
+Notas:
+- El panel de métricas muestra `RAM asignada` (opción) y el `uso de memoria` o `tick` solo si usas websockets (recomendado); el proxy puede ser extendido para reemitir eventos websocket desde exaroton a tu cliente.
+- Opciones administrativas (like Start/Stop) requieren enviar el header `x-proxy-key` con el valor definido en tu `.env`.
+
+
 ---
 *Desarrollado para la comunidad de LastDayCraft.*
