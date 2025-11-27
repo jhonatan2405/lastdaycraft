@@ -13,6 +13,8 @@
   const bgAudio = new Audio("audio/horror-box-149248.mp3");
   bgAudio.loop = true;
   bgAudio.volume = 0.35;
+  bgAudio.preload = "auto";
+  let bgAudioStarted = false;
 
   // Crear bloques tipo "chunk" dentro del cuadrado
   const blocks = [];
@@ -59,11 +61,72 @@
     body.classList.add("is-ready");
 
     // Intentar reproducir audio (puede requerir interacción previa del usuario)
-    bgAudio
-      .play()
-      .catch(() => {
-        // Si el navegador bloquea la reproducción automática, no pasa nada.
+    // Si el navegador bloquea la reproducción automática, añadimos un fallback
+    // para comenzar la reproducción en la primera interacción del usuario.
+    function tryPlayBgAudio() {
+      if (bgAudioStarted) return;
+      bgAudio
+        .play()
+        .then(() => {
+          bgAudioStarted = true;
+          console.log("bgAudio reproduciéndose automáticamente");
+        })
+        .catch((err) => {
+          console.warn("Reproducción automática de bgAudio bloqueada:", err);
+          const resumeOnUserAction = () => {
+            bgAudio
+              .play()
+              .then(() => {
+                bgAudioStarted = true;
+                console.log("bgAudio iniciado tras interacción del usuario");
+              })
+              .catch(() => {});
+          };
+
+          document.addEventListener("pointerdown", resumeOnUserAction, { once: true });
+          document.addEventListener("keydown", resumeOnUserAction, { once: true });
+          // También intentamos reanudar desde eventos de entrada táctil
+          document.addEventListener("touchstart", resumeOnUserAction, { once: true });
+        });
+    }
+
+    tryPlayBgAudio();
+
+    // Control de reproducción visible para el usuario
+    const audioToggle = document.getElementById("audio-toggle");
+    if (audioToggle) {
+      // Estado inicial
+      audioToggle.textContent = "🔈"; // no suena todavía
+
+      // Actualizar estado visual cuando la reproducción empieza
+      bgAudio.addEventListener("play", () => {
+        audioToggle.textContent = "🔊";
       });
+
+      bgAudio.addEventListener("pause", () => {
+        audioToggle.textContent = "🔈";
+      });
+
+      audioToggle.addEventListener("click", () => {
+        if (!bgAudioStarted) {
+          // Intentar iniciar si aún no se pudo reproducir automáticamente
+          tryPlayBgAudio();
+          return;
+        }
+
+        if (bgAudio.paused) {
+          bgAudio
+            .play()
+            .then(() => {
+              audioToggle.textContent = "🔊";
+            })
+            .catch(() => {});
+        } else {
+          bgAudio.pause();
+          audioToggle.textContent = "🔈";
+        }
+      });
+    }
   }
 
   // Quitar loading automáticamente cuando termina la "carga"

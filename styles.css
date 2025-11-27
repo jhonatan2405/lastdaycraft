@@ -294,6 +294,27 @@ body::before {
   transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
+/* Botón pequeño para controlar música de fondo */
+.audio-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(0,0,0,0.4);
+  color: var(--accent-soft);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.audio-toggle:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(243,165,71,0.18), rgba(243,165,71,0.08));
+  box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+}
+
 .hero__content {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);

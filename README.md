@@ -1,0 +1,54 @@
+# 🧟 LastDayCraft - Zombie Survival Server Website
+
+Bienvenido al repositorio del sitio web oficial de **LastDayCraft**, un servidor de Minecraft enfocado en la supervivencia zombie extrema.
+
+Este proyecto es una landing page moderna y atmosférica diseñada para guiar a los jugadores en la instalación del modpack, mostrar características destacadas y ofrecer recursos útiles.
+
+## ✨ Características del Sitio
+
+- **Diseño Atmosférico**: Estética oscura y temática de supervivencia con efectos visuales inmersivos.
+- **Reproductor de Audio**: Música de fondo y efectos de sonido para mejorar la experiencia (con controles de usuario).
+- **Animaciones Premium**:
+  - Logo flotante con física suave.
+  - Efectos de "glitch" en títulos.
+  - Partículas ambientales brillantes.
+  - Navegación con efecto de "respiración".
+  - Micro-interacciones y efectos de hover en todos los elementos.
+- **Optimización**: Carga rápida y animaciones fluidas (60fps).
+- **Responsive**: Totalmente adaptado para móviles, tablets y escritorio.
+
+## 🛠️ Mejoras Recientes
+
+Se ha realizado una actualización completa del sitio con las siguientes mejoras:
+
+### 🎨 Visual y UI
+- **Favicon Personalizado**: Se integró el logo del servidor como icono del navegador.
+- **Navegación Mejorada**: Corrección de estilos en los enlaces del menú y nuevos efectos de hover.
+- **Efectos Visuales**: Implementación de brillo (glow), escalas dinámicas y sombras en botones y tarjetas.
+- **Feedback Interactivo**: Efecto "ripple" al hacer clic en botones y sonidos de hover sutiles.
+
+### ⚡ Rendimiento y Funcionalidad
+- **Carga Optimizada**: Reducción del tiempo de la pantalla de carga en un 40% (de 5.5s a ~3.3s).
+- **Corrección de Audio**: Solución a problemas de rutas de archivos para asegurar la reproducción correcta de música y efectos.
+- **Estabilidad**: Eliminación de efectos de scroll que causaban conflictos visuales, manteniendo la suavidad de la navegación.
+
+## 🚀 Instalación y Despliegue
+
+Este sitio es estático (HTML, CSS, JS), por lo que es muy fácil de desplegar.
+
+### GitHub Pages (Recomendado)
+1. Ve a la pestaña **Settings** de este repositorio.
+2. Entra en la sección **Pages**.
+3. En **Source**, selecciona la rama `main` y la carpeta `/ (root)`.
+4. Guarda los cambios. ¡Tu sitio estará online en minutos!
+
+## 📂 Estructura del Proyecto
+
+- `index.html`: Estructura principal y contenido.
+- `styles.css`: Estilos, variables de diseño y animaciones.
+- `script.js`: Lógica de la pantalla de carga, reproductor de audio y efectos interactivos.
+- `audio/`: Archivos de sonido y música de fondo.
+- `logo-lastdaycraft.png`: Recursos gráficos.
+
+---
+*Desarrollado para la comunidad de LastDayCraft.*
