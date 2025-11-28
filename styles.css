@@ -66,6 +66,28 @@ canvas#bg-particles {
   animation: particleGlow 4s ease-in-out infinite;
 }
 
+/* Disable animated particles and heavy filters on smaller or touch devices to save CPU */
+@media (max-width: 820px), (pointer: coarse) {
+  canvas#bg-particles { display: none; }
+  .hero__logo-frame {
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  /* Avoid decoding GIFs/animations on mobile to save CPU */
+  .hero__logo-img { display: none; }
+  /* Reduce heavy visual effects on mobile */
+  .nav { box-shadow: none; backdrop-filter: none; }
+  .btn { box-shadow: none; }
+  .btn::before { display: none; }
+  .audio-toggle { box-shadow: none; }
+}
+
+/* Respect operating system's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  canvas#bg-particles { display: none; }
+  * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
+
 .loading-screen {
   position: fixed;
   inset: 0;

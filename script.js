@@ -9,11 +9,18 @@
 
   body.classList.add("is-loading");
 
-  // Audio de fondo (música / ambiente zombi)
-  const bgAudio = new Audio("audio/horror-box-149248.mp3");
-  bgAudio.loop = true;
-  bgAudio.volume = 0.35;
-  bgAudio.preload = "auto";
+  // Background audio: defer heavy resource loading until necessary
+  // Do not create or preload on low-end devices or mobile to save network/CPU.
+  let bgAudio = null;
+  function createBgAudio() {
+    if (bgAudio) return bgAudio;
+    bgAudio = new Audio("audio/horror-box-149248.mp3");
+    bgAudio.loop = true;
+    bgAudio.volume = 0.35;
+    // Defer loading until user interaction or desktop set
+    bgAudio.preload = "none";
+    return bgAudio;
+  }
   let bgAudioStarted = false;
 
   // Crear bloques tipo "chunk" dentro del cuadrado
@@ -65,9 +72,10 @@
     // para comenzar la reproducción en la primera interacción del usuario.
     function tryPlayBgAudio() {
         if (bgAudioStarted) return;
+        const aud = createBgAudio();
 
-        // Intento 1: reproducir con sonido
-        bgAudio
+        // Try playing directly (may still be blocked on some browsers)
+        aud
           .play()
           .then(() => {
             bgAudioStarted = true;
@@ -76,8 +84,8 @@
           .catch((err) => {
             console.warn("Reproducción automática con sonido bloqueada:", err);
             // Intento 2: reproducir en modo silenciado (esto suele permitirse) para "desbloquear"
-            bgAudio.muted = true;
-            bgAudio
+            aud.muted = true;
+            aud
               .play()
               .then(() => {
                 bgAudioStarted = true;
@@ -118,9 +126,10 @@
     if (overlayBtn) {
       overlayBtn.addEventListener("click", () => {
         // Al hacer click en el overlay intentamos reproducir con sonido y desbloquear
-        bgAudio.muted = false;
-        bgAudio.volume = 0.35;
-        bgAudio
+          const aud = createBgAudio();
+          aud.muted = false;
+          aud.volume = 0.35;
+          aud
           .play()
           .then(() => {
             bgAudioStarted = true;
@@ -137,31 +146,32 @@
       // Estado inicial
       audioToggle.textContent = "🔈"; // no suena todavía
 
-      // Actualizar estado visual cuando la reproducción empieza
-      bgAudio.addEventListener("play", () => {
+      // Update UI when playback begins (wire events once on the created audio)
+      const aud = createBgAudio();
+      aud.addEventListener("play", () => {
         audioToggle.textContent = "🔊";
       });
 
-      bgAudio.addEventListener("pause", () => {
+      aud.addEventListener("pause", () => {
         audioToggle.textContent = "🔈";
       });
 
       audioToggle.addEventListener("click", () => {
         if (!bgAudioStarted) {
-          // Intentar iniciar si aún no se pudo reproducir automáticamente
+          // Try to create and play the audio if not yet started
           tryPlayBgAudio();
           return;
         }
-
-        if (bgAudio.paused) {
-          bgAudio
+        const aud = createBgAudio();
+        if (aud.paused) {
+          aud
             .play()
             .then(() => {
               audioToggle.textContent = "🔊";
             })
             .catch(() => {});
         } else {
-          bgAudio.pause();
+            aud.pause();
           audioToggle.textContent = "🔈";
         }
       });
@@ -283,8 +293,20 @@
   const canvas = document.getElementById("bg-particles");
   if (!canvas) return;
 
+  // Determine device capacity and bail out for low end devices to avoid CPU/GPU strain
+  const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const deviceMemory = navigator.deviceMemory || 4;
+  const cpuCount = navigator.hardwareConcurrency || 4;
+  const isLowEnd = isCoarsePointer || deviceMemory <= 1 || cpuCount <= 2;
+  if (isLowEnd) {
+    // Optionally remove canvas from DOM to free resources
+    // canvas.remove(); // Uncomment if you want to remove it outright
+    return;
+  }
+
   const ctx = canvas.getContext("2d");
   let particles = [];
+  // On capable devices we use a higher particle count
   const COUNT = 90;
 
   function resize() {
@@ -292,7 +314,12 @@
     canvas.height = window.innerHeight;
   }
 
-  window.addEventListener("resize", resize);
+  // Debounce resize event to avoid frequent reflows on mobile
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 160);
+  });
   resize();
 
   function createParticles() {
@@ -307,6 +334,7 @@
       });
     }
   }
+  const useGradients = true;
 
   function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -314,19 +342,24 @@
 
     for (const p of particles) {
       ctx.beginPath();
-      const gradient = ctx.createRadialGradient(
-        p.x,
-        p.y,
-        0,
-        p.x,
-        p.y,
-        p.r * 3
-      );
-      gradient.addColorStop(0, `rgba(243,165,71,${p.alpha})`);
-      gradient.addColorStop(1, "rgba(243,165,71,0)");
-      ctx.fillStyle = gradient;
-      ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
-      ctx.fill();
+      if (useGradients) {
+        const gradient = ctx.createRadialGradient(
+          p.x,
+          p.y,
+          0,
+          p.x,
+          p.y,
+          p.r * 3
+        );
+        gradient.addColorStop(0, `rgba(243,165,71,${p.alpha})`);
+        gradient.addColorStop(1, "rgba(243,165,71,0)");
+        ctx.fillStyle = gradient;
+        ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = `rgba(243,165,71,${Math.min(1,p.alpha)})`;
+        ctx.fillRect(p.x, p.y, Math.round(p.r + 1), Math.round(p.r + 1));
+      }
 
       p.y += p.speedY;
       if (p.y - p.r * 3 > canvas.height) {
@@ -404,13 +437,13 @@
     }
   }
 
-  window.addEventListener("scroll", onScroll);
+  // Use passive scroll listener for smoother scrolling on mobile
+  window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 })();
 
-// Sonido leve al pasar el mouse sobre ciertos elementos
+// Sonido leve al pasar el mouse sobre ciertos elementos (solo para dispositivos con pointer: fine)
 (function () {
-  const hoverSoundSrc = "audio/pressing-a-computer-button.mp3";
   const interactiveSelectors = [
     ".btn",
     ".btn-github",
@@ -419,20 +452,31 @@
     ".video-card",
   ];
 
+  const isPointerFine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  if (!isPointerFine) return; // Skip hover sounds on touch devices
+
   const elements = document.querySelectorAll(interactiveSelectors.join(", "));
   if (!elements.length) return;
 
   let lastPlay = 0;
-  const hoverAudio = new Audio(hoverSoundSrc);
-  hoverAudio.volume = 0.25;
+  let hoverAudio = null;
+
+  function ensureHoverAudio() {
+    if (hoverAudio) return hoverAudio;
+    hoverAudio = new Audio("audio/pressing-a-computer-button.mp3");
+    hoverAudio.volume = 0.25;
+    hoverAudio.preload = 'none';
+    return hoverAudio;
+  }
 
   function playHoverSound() {
     const now = performance.now();
     if (now - lastPlay < 160) return;
     lastPlay = now;
 
-    hoverAudio.currentTime = 0;
-    hoverAudio.play().catch(() => {});
+    const a = ensureHoverAudio();
+    a.currentTime = 0;
+    a.play().catch(() => {});
   }
 
   elements.forEach((el) => {
@@ -444,33 +488,44 @@
 (function () {
   const logo = document.querySelector(".hero__logo-img");
   if (!logo) return;
-
-  logo.style.animation = "float 6s ease-in-out infinite";
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pointerFine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  const shouldAnimateLogo = !prefersReduced && pointerFine;
+  if (shouldAnimateLogo) {
+    logo.style.animation = "float 6s ease-in-out infinite";
+  }
 })();
 
 // Efecto de pulso en las pills del servidor
 (function () {
   const accentPill = document.querySelector(".pill--accent");
   if (!accentPill) return;
-
-  setInterval(() => {
-    accentPill.style.animation = "pulse 1.5s ease-in-out";
-    setTimeout(() => {
-      accentPill.style.animation = "";
-    }, 1500);
-  }, 5000);
+  // Only animate if user doesn't prefer reduced motion and pointer is fine
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pointerFine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  if (!prefersReduced && pointerFine) {
+    setInterval(() => {
+      accentPill.style.animation = "pulse 1.5s ease-in-out";
+      setTimeout(() => {
+        accentPill.style.animation = "";
+      }, 1500);
+    }, 5000);
+  }
 })();
 
 // Efecto de glitch sutil en el título principal
 (function () {
   const title = document.querySelector(".hero h1");
   if (!title) return;
-
-  setInterval(() => {
-    title.style.animation = "glitch 0.3s ease-in-out";
-    setTimeout(() => {
-      title.style.animation = "";
-    }, 300);
-  }, 8000);
+  const prefersReduced2 = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pointerFine2 = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  if (!prefersReduced2 && pointerFine2) {
+    setInterval(() => {
+      title.style.animation = "glitch 0.3s ease-in-out";
+      setTimeout(() => {
+        title.style.animation = "";
+      }, 300);
+    }, 8000);
+  }
 })();
 
