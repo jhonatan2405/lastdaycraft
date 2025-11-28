@@ -172,7 +172,7 @@ body::before {
   backdrop-filter: blur(18px);
   position: sticky;
   top: 1rem;
-  z-index: 20;
+  z-index: 100; /* ensure nav is above hero content */
   animation: navBreath 4s ease-in-out infinite;
 }
 
@@ -180,6 +180,12 @@ body::before {
   display: flex;
   align-items: center;
   gap: 0.9rem;
+}
+
+/* On smaller screens, reduce spacing so items don't collide */
+@media (max-width: 960px) {
+  .nav__right { gap: 0.4rem; }
+  .btn-github { padding: 0.35rem 0.55rem; }
 }
 
 .nav__logo {
@@ -250,6 +256,7 @@ body::before {
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  position: relative; /* ensure z-index works */
 }
 
 .btn-github {
@@ -288,10 +295,17 @@ body::before {
 
 .nav__toggle span {
   display: block;
-  height: 2px;
+  height: 3px;           /* thicker lines */
+  width: 18px;           /* visible width */
+  margin: 3px auto;      /* centered & spaced */
+  background: var(--accent); /* accent color for contrast */
+  border-radius: 6px;
+  transition: transform var(--transition-fast), opacity var(--transition-fast), background 180ms ease-in-out;
+}
+
+.nav__toggle:hover span,
+.nav__toggle:focus span {
   background: var(--accent-soft);
-  border-radius: 999px;
-  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 /* Botón pequeño para controlar música de fondo */
@@ -405,9 +419,19 @@ body::before {
 
 .hero__cta {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Avoid CTAs wrapping into new line on medium widths */
   gap: 0.8rem;
   margin-top: 1.7rem;
+}
+
+/* Ensure hero CTA anchor buttons never look like plain text links (no underlines) */
+.hero__cta .btn,
+.hero__cta a.btn,
+.hero__cta a.btn:visited,
+.hero__cta a.btn:hover,
+.hero__cta a.btn:focus,
+.hero__cta a.btn:active {
+  text-decoration: none;
 }
 
 .btn {
@@ -418,6 +442,7 @@ body::before {
   border-radius: var(--radius-pill);
   font-size: 0.9rem;
   font-weight: 500;
+  white-space: nowrap; /* Keep button label on a single line */
   letter-spacing: 0.11em;
   text-transform: uppercase;
   border: 1px solid transparent;
@@ -1151,6 +1176,44 @@ body::before {
     right: 1rem;
     bottom: 1.1rem;
   }
+
+  /* Make CTA buttons stack on small screens and prevent overflow */
+  .hero__cta {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .hero__cta .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+  }
+
+  /* Keep GitHub + audio visible, but hide GitHub label (show icon only) */
+  .btn-github {
+    display: inline-flex !important;
+    padding: 0.3rem 0.6rem;
+  }
+  .btn-github span { display: none; } /* hide the visible label, keep GitHub icon */
+  .audio-toggle { display: inline-flex !important; width:36px; height:36px; }
+
+  /* Increase nav toggle target on small screens */
+  .nav__toggle {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    z-index: 120; /* ensure it's above other elements */
+    border: 1px solid rgba(255,211,158,0.12);
+    background: rgba(12,4,2,0.9);
+  }
+  .nav__toggle span { height: 3px; background: var(--accent); width: 14px; }
+  /* Position nav toggle absolutely in the right corner of the nav on small screens */
+  .nav { position: relative; }
+  .nav__toggle { position: absolute; right: 10px; top: 8px; }
+  /* Ensure nav right doesn't overlap toggle */
+  .nav__right { margin-right: 52px; }
 }
 
 @media (max-width: 520px) {

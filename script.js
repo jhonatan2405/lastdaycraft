@@ -373,12 +373,14 @@
   if (!toggle || !links) return;
 
   toggle.addEventListener("click", () => {
-    links.classList.toggle("is-open");
+    const isOpen = links.classList.toggle("is-open");
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
 
   links.addEventListener("click", (e) => {
     if (e.target.tagName === "A") {
       links.classList.remove("is-open");
+      toggle.setAttribute('aria-expanded', 'false');
     }
   });
 })();
