@@ -182,6 +182,50 @@
   setTimeout(() => {
     finishLoading();
   }, duration + 800);
+
+  // ===== Image/Lazy prefetching & IntersectionObserver =====
+  // Prefetch images during the loading screen for capable devices.
+  function shouldPrefetch() {
+    const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    const deviceMemory = navigator.deviceMemory || 4;
+    const effectiveType = (navigator.connection && navigator.connection.effectiveType) || '4g';
+    // Avoid prefetch on 2g/slow networks or low-memory devices
+    if (isCoarse || deviceMemory <= 1) return false;
+    if (effectiveType && (effectiveType === '2g' || effectiveType === 'slow-2g')) return false;
+    return true;
+  }
+
+  const lazyImgs = Array.from(document.querySelectorAll('img.lazy'));
+  const ioOptions = { root: null, rootMargin: '600px 0px 600px 0px', threshold: 0 };
+  const imgObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        const src = img.getAttribute('data-src');
+        if (src && img.src !== src) {
+          img.src = src;
+          img.removeAttribute('data-src');
+          img.classList.remove('lazy');
+        }
+        imgObserver.unobserve(img);
+      }
+    }
+  }, ioOptions);
+
+  lazyImgs.forEach((img) => imgObserver.observe(img));
+
+  // Prefetch images marked with data-prefetch=true only during load and only on capable devices
+  if (shouldPrefetch()) {
+    const prefetchImgs = Array.from(document.querySelectorAll('img[data-prefetch="true"]'));
+    prefetchImgs.forEach((img) => {
+      const src = img.getAttribute('data-src') || img.src;
+      const i = new Image();
+      i.src = src; // browser will cache it
+      i.onload = () => {
+        // nothing, cached
+      };
+    });
+  }
 })();
 
 // Panel de estado y métricas (usa proxy /api para no exponer el token)

@@ -774,6 +774,8 @@ body::before {
   text-align: center;
   color: var(--text-muted);
   background: rgba(10, 3, 2, 0.9);
+  /* Reserve height for media to avoid layout shifts during fast scrolling */
+  min-height: 132px;
 }
 
 .folders-grid {
